@@ -3,6 +3,7 @@ from PIL import Image, ImageTk
 import datetime
 import time
 from setup_coinly import *
+from coinly_extra import *
 from configparser import ConfigParser 
 import sys 
 
@@ -10,11 +11,8 @@ def sair(event):
     sys.exit()
 
 def adicionarcenas(event):
-    print("OK")
+    adicionar_item()
 
-def setup():
-    splash.destroy()
-    pag_nome()
 
 def coinly():
     splash.destroy()
@@ -43,8 +41,12 @@ def coinly():
 
     canvas.create_image(15, 0, image=img_logo, anchor="nw")
 
+    nomeuser = ConfigParser()
+    nomeuser.read('coinly.conf')  
+    nutilizador = nomeuser['CoinlyUser']['nutilizador']
 
-    string_user = tk.Label(coinly, text="Olá, Utilizador", bg="white",font=("Product Sans", 25),fg="#124958")
+
+    string_user = tk.Label(coinly, text="Olá, "+nutilizador, bg="white",font=("Product Sans", 25),fg="#124958")
     canvas.create_window(160, 90, window=string_user)
 
 
@@ -73,10 +75,17 @@ def coinly():
 
 
 
+def OOBE():
+    
+    checkoobe = ConfigParser()
+    checkoobe.read('coinly.conf')  
+    check = checkoobe['CoinlyUser']['faseoobe']
 
-
-
-
+    if check == '1':
+        coinly()
+    elif check == '0':
+        splash.destroy()
+        pag_nome()
 
 
 
@@ -104,5 +113,5 @@ logotipo.pack(fill="both", expand=True)
 imagemsplash = Image.open("assets\\splash.png")
 imagemsplash2 = ImageTk.PhotoImage(imagemsplash)
 logotipo.create_image(0, 0, image=imagemsplash2, anchor="nw")
-splash.after(3000, setup)
+splash.after(1000, OOBE)
 splash.mainloop()
