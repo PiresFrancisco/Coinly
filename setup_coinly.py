@@ -196,7 +196,10 @@ def pag_nome():
 
     config = ConfigParser()
     config.read('coinly.conf')
-    config.set("CoinlyUser","estado_adicionar","0")   #RESET
+    config.set("CoinlyUser","estado_adicionar","0")
+    config.set("CoinlyUser","nutilizador","")   #RESET
+    config.set("CoinlyUser","darkmode","0")
+
 
     with open('coinly.conf', 'w') as f:
         config.write(f)
