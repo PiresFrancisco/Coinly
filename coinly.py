@@ -138,3 +138,4 @@ imagemsplash2 = ImageTk.PhotoImage(imagemsplash)
 logotipo.create_image(0, 0, image=imagemsplash2, anchor="nw")
 splash.after(1000, OOBE)
 
+splash.mainloop()
