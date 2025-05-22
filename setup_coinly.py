@@ -3,118 +3,12 @@ from PIL import Image, ImageTk
 import datetime
 import time
 from configparser import ConfigParser
-
-def adicionarrendimento(event):
-    rendimentoadd = tk.Toplevel()
-
-    rendimentoadd.geometry("500x500")
-    rendimentoadd.title("Coinly > Adicionar Rendimento")
-
-    rendimentoadd.resizable(False, False)
-    canvas = tk.Canvas(rendimentoadd, width=500, height=500, bg="#124958",bd=0, highlightthickness=0)
-    canvas.pack(fill="both", expand=True)
-
-    pagrendimento = Image.open("assets\\rendimento_add.png")
-    pagrendimento2 = ImageTk.PhotoImage(pagrendimento)
-    canvas.image = pagrendimento2
-    canvas.create_image(0, 0, image=pagrendimento2, anchor="nw")
-
-    rendimentodinheiro = tk.Entry(rendimentoadd,justify="center", width=15,font=("Urbanist", 30),bg="#0B313C",fg="white")
-    canvas.create_window(250, 380, window=rendimentodinheiro)
-
-
-
-
-    opcoes = ["                                     ", "Salário", "Subsídios (ex.: alimentação, férias, Natal)", "Bolsas de estudo","Pensão / Reforma","Ajudas familiares","Outros"]
-    opcao_var = tk.StringVar()
-    opcao_var.set(opcoes[0])
-
-    rendimentotipo = tk.OptionMenu(rendimentoadd, opcao_var, *opcoes,)
-    rendimentotipo.config(bg="#0B313C", fg="white", font=("Arial", 15))
-    rendimentotipo.pack(pady=20)
-
-    canvas.create_window(250, 263, window=rendimentotipo)
-
-    def concluir(event):
-        rendimentoadd.destroy()
-
-        config = ConfigParser()
-        config.read('coinly.conf')
-        config.set("CoinlyUser","estado_adicionar","1")
-
-        with open('coinly.conf', 'w') as f:
-            config.write(f)
-
-    btn_concluir = Image.open("assets\\btn_concluir.png")
-    btn_concluir2 = ImageTk.PhotoImage(btn_concluir)
-    btnconcluir3 = canvas.create_image(187, 444, image=btn_concluir2, anchor="nw")
-    canvas.tag_bind(btnconcluir3, "<Button-1>",concluir)
-
-
-    rendimentoadd.mainloop()
-
-
-
-def continuarOOBE(event):
-    confirmar = ConfigParser()
-    confirmar.read('coinly.conf')  
-    check = confirmar['CoinlyUser']['estado_adicionar']
-
-    if check == '0':
-        erro = tk.Tk()
-        erro.title("Coinly > Erro")
-        msg_erro = tk.Label(erro,text="Por favor, Adicione pelo menos um item.",font=20)
-        msg_erro.pack(padx=20,pady=20)
-        erro.mainloop()
-    elif check == '1':
-        print("OK")
-
-
-def adicionardespesa(event):
-    despesaadd = tk.Toplevel()
-
-    despesaadd.geometry("500x500")
-    despesaadd.title("Coinly > Adicionar Despesa")
-
-    despesaadd.resizable(False, False)
-    canvas = tk.Canvas(despesaadd, width=500, height=500, bg="#124958",bd=0, highlightthickness=0)
-    canvas.pack(fill="both", expand=True)
-
-    pagrendimento = Image.open("assets\\despesa_add.png")
-    pagrendimento2 = ImageTk.PhotoImage(pagrendimento)
-    canvas.image = pagrendimento2
-    canvas.create_image(0, 0, image=pagrendimento2, anchor="nw")
-
-    rendimentodinheiro = tk.Entry(despesaadd,justify="center", width=15,font=("Urbanist", 30),bg="#0B313C",fg="white")
-    canvas.create_window(250, 380, window=rendimentodinheiro)
-
-
-
-
-    opcoes = ["                                     ", "Renda / Prestação da casa", "Contas da Casa", "Seguros","Transporte","Alimentação ","Pessoais","Lazer","Financeiras"]
-    opcao_var = tk.StringVar()
-    opcao_var.set(opcoes[0])
-
-    rendimentotipo = tk.OptionMenu(despesaadd, opcao_var, *opcoes,)
-    rendimentotipo.config(bg="#0B313C", fg="white", font=("Arial", 15))
-    rendimentotipo.pack(pady=20)
-
-    canvas.create_window(250, 263, window=rendimentotipo)
-
-    def concluir(event):
-        despesaadd.destroy()
-
-    btn_concluir = Image.open("assets\\btn_concluir.png")
-    btn_concluir2 = ImageTk.PhotoImage(btn_concluir)
-    btnconcluir3 = canvas.create_image(187, 444, image=btn_concluir2, anchor="nw")
-    canvas.tag_bind(btnconcluir3, "<Button-1>",concluir)
-    
-
-    despesaadd.mainloop()
+import os
+import sys
 
 
 def pag_nome():
-
+    
     pag_nome = tk.Tk()
 
     pag_nome.geometry("500x500")
@@ -169,24 +63,73 @@ def pag_nome():
             pag2 = Image.open("assets\setup_pag2.png")
             pag2stp = ImageTk.PhotoImage(pag2)
             canvas.create_image(0, 0, image=pag2stp, anchor="nw")
-
-            rendimentobtn = Image.open("assets\\btn_rendimento_pequeno.png")
-            rendimentobtn2 = ImageTk.PhotoImage(rendimentobtn)
-            rendimentobtn3 = canvas.create_image(136, 379, image=rendimentobtn2, anchor="nw")
-
-            despesabtn = Image.open("assets\\btn_despesa_pequeno.png")
-            despesabtn2 = ImageTk.PhotoImage(despesabtn)
-            despesabtn3 = canvas.create_image(136, 430, image=despesabtn2, anchor="nw")
-
+            
             string_user = tk.Label(pag2setup, text="Bem-Vindo, "+nome +"!", bg="#174552",font=("Product Sans", 30),fg="white",anchor="center")
             canvas.create_window(250, 219, window=string_user)
 
-            canvas.tag_bind(rendimentobtn3, "<Button-1>",adicionarrendimento)
-            canvas.tag_bind(despesabtn3, "<Button-1>",adicionardespesa)
-
-            avancar = Image.open("assets\\avancar_grande.png")
+       
+            avancar = Image.open("assets\\btn_proximo.png")
             avancar2 = ImageTk.PhotoImage(avancar)
-            avancar3 = canvas.create_image(420, 400, image=avancar2, anchor="nw")
+            avancar3 = canvas.create_image(236, 445, image=avancar2, anchor="nw")
+           
+
+            def continuarOOBE(event):
+                pag2setup.withdraw()
+
+                pag_tema = tk.Toplevel()
+                pag_tema.geometry("500x500")
+                pag_tema.title("Bem-Vindo ao Coinly!")
+                pag_tema.resizable(False, False)
+
+                canvas_tema = tk.Canvas(pag_tema, width=500, height=500, bg="#124958", bd=0, highlightthickness=0)
+                canvas_tema.pack(fill="both", expand=True)
+
+                seltema = Image.open("assets\\bg_selTema.png")
+                seltema2 = ImageTk.PhotoImage(seltema)
+
+                canvas_tema.bg_image = seltema2
+
+                canvas_tema.create_image(0, 0, image=seltema2, anchor="nw")
+
+                canvas_tema.bg_image = seltema2
+                canvas_tema.avancar_img = avancar2
+                preto = canvas_tema.create_image(350, 420, image=canvas_tema.avancar_img, anchor="nw")
+                
+                def temabranco(event):
+                    print("TEMA BRANCO")
+                    pag_tema.withdraw()
+                    fim_OOBE = tk.Toplevel()
+                    fim_OOBE.geometry("500x500")
+                    fim_OOBE.title("Bem-Vindo ao Coinly!")
+                    fim_OOBE.resizable(False, False)
+                    canvas = tk.Canvas(fim_OOBE, width=500, height=500, bg="#124958", bd=0, highlightthickness=0)
+                    canvas.pack(fill="both", expand=True)
+
+                    def reniciar():
+                        config = ConfigParser()
+                        config.read('coinly.conf')
+                        config.set("CoinlyUser","faseoobe","1")
+                        with open('coinly.conf', 'w') as f:
+                            config.write(f)
+                        os.execl(sys.executable, sys.executable, *sys.argv)
+
+                    oobemsg = Image.open("assets\\oobeFim.png")
+                    oobemsg2 = ImageTk.PhotoImage(oobemsg)
+                    canvas.create_image(0, 0, image=oobemsg2, anchor="nw")
+                    
+                    fim_OOBE.after(6000, reniciar)
+                    fim_OOBE.mainloop()
+
+                def temapreto(event): 
+                    print("TEMA BRANCO")
+
+                
+                branco = canvas_tema.create_image(120, 420, image=canvas_tema.avancar_img, anchor="nw")
+
+                canvas_tema.tag_bind(preto, "<Button-1>",temapreto)
+                canvas_tema.tag_bind(branco, "<Button-1>",temabranco)
+
+
             canvas.tag_bind(avancar3, "<Button-1>",continuarOOBE)
 
             pag2setup.mainloop()
@@ -196,7 +139,7 @@ def pag_nome():
 
     config = ConfigParser()
     config.read('coinly.conf')
-    config.set("CoinlyUser","estado_adicionar","0")
+
     config.set("CoinlyUser","nutilizador","")   #RESET
     config.set("CoinlyUser","darkmode","0")
 
