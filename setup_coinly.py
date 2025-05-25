@@ -5,7 +5,17 @@ import time
 from configparser import ConfigParser
 import os
 import sys
+import mysql.connector
 
+
+database = mydb = mysql.connector.connect(
+   host = "localhost",
+   user="root",
+  password="password",
+    database="coinly"
+)
+
+cursor = database.cursor(buffered=True)
 
 def pag_nome():
     
@@ -111,6 +121,37 @@ def pag_nome():
                         config.set("CoinlyUser","faseoobe","1")
                         with open('coinly.conf', 'w') as f:
                             config.write(f)
+
+                        cursor.execute("""
+                            CREATE TABLE IF NOT EXISTS despesas (
+                                id INT AUTO_INCREMENT PRIMARY KEY,
+                                tipo VARCHAR(255) UNIQUE,
+                                quantidade FLOAT DEFAULT 0
+                            )""")
+                        
+                        dadosZero = [
+                            ('pessoais', 0),
+                            ('financeiras', 0),
+                            ('seguros', 0),
+                            ('contas_casa', 0),
+                            ('alimentacao', 0),
+                            ('renda_prestacao', 0),
+                            ('transporte', 0),
+                            ('lazer', 0),
+                        ]
+
+                        for tipo, quantidade in dadosZero:
+                            cursor.execute("""
+                            INSERT INTO despesas (tipo, quantidade) VALUES (%s, %s)
+                            ON DUPLICATE KEY UPDATE quantidade = quantidade
+                            """, (tipo, quantidade))
+
+
+                        database.commit()
+                        cursor.close()
+                        database.close()
+
+
                         os.execl(sys.executable, sys.executable, *sys.argv)
 
                     oobemsg = Image.open("assets\\oobeFim.png")

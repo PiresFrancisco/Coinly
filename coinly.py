@@ -6,6 +6,11 @@ from setup_coinly import *
 from coinly_extra import *
 from configparser import ConfigParser 
 import sys 
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib.pyplot as plt
+from coinly_receitas import *
+import mysql.connector
+
 
 database = mydb = mysql.connector.connect(
    host = "localhost",
@@ -59,6 +64,16 @@ def coinly():
     canvas = tk.Canvas(coinly, width=500, height=500, bg="#124958",bd=0, highlightthickness=0)
     canvas.pack(fill="both", expand=True)
 
+
+
+
+    def trocar(event):
+        coinly.destroy()
+        coinly_receitas()
+        os.execl(sys.executable, sys.executable, *sys.argv)
+        
+        
+
     temapreto = ConfigParser()
     temapreto.read('coinly.conf')  
     conf_temapreto = temapreto['CoinlyUser']['darkmode']
@@ -98,6 +113,64 @@ def coinly():
             tematxt3 = "black"
 
 
+
+
+    
+    ###### Gráfico #############################
+
+    cursor.execute("SELECT SUM(quantidade) FROM despesas WHERE tipo = 'pessoais'")
+    pessoais = cursor.fetchone()[0]
+
+
+    cursor.execute("SELECT SUM(quantidade) FROM despesas WHERE tipo = 'financeiras'")
+    finaceiras = cursor.fetchone()[0]
+
+
+    cursor.execute("SELECT SUM(quantidade) FROM despesas WHERE tipo = 'seguros'")
+    seguros = cursor.fetchone()[0]
+      
+
+    cursor.execute("SELECT SUM(quantidade) FROM despesas WHERE tipo = 'contas_casa'")
+    contas_casa = cursor.fetchone()[0]
+    
+    cursor.execute("SELECT SUM(quantidade) FROM despesas WHERE tipo = 'alimentacao'")
+    alimentacao = cursor.fetchone()[0]
+
+
+    cursor.execute("SELECT SUM(quantidade) FROM despesas WHERE tipo = 'renda_prestacao'")
+    renda_prestacao = cursor.fetchone()[0]
+    
+        
+    cursor.execute("SELECT SUM(quantidade) FROM despesas WHERE tipo = 'transporte'")
+    transporte = cursor.fetchone()[0]
+  
+
+    cursor.execute("SELECT SUM(quantidade) FROM despesas WHERE tipo = 'lazer'")
+    lazer = cursor.fetchone()[0]
+   
+    
+    fig = plt.Figure(figsize=(4.18, 2.34), dpi=100,facecolor='#DEDEDE')    
+    ax = fig.add_subplot(111)
+
+    labels = ['Pessoais', 'Financeiras', 'Contas da Casa', 'Rendas','Transportes','Alimentação','Seguros','Lazer']
+    sizes = [pessoais, finaceiras, contas_casa, renda_prestacao,transporte, alimentacao, seguros,lazer]
+    colors = ['red', 'yellow', 'blue', 'brown', 'green', 'magenta', 'skyblue', 'orange']
+
+    if sum(sizes) > 0:
+        ax.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=90)
+    else:
+        ax.text(0.5, 0.5, 'Bem-Vindo! Adicione dados clicando no botão (+)', ha='center', va='center', fontsize=8, color='white')
+    ax.set_title(' ')
+    ax.set_facecolor('#DEDEDE')
+
+    fig_canvas = FigureCanvasTkAgg(fig, master=coinly)
+    fig_widget = fig_canvas.get_tk_widget()
+    fig_canvas.draw()
+
+    canvas.create_window(270, 255, window=fig_widget)
+
+    ###### Gráfico #############################
+
     logotipo = Image.open("assets\\logo.png")
     img_logo = ImageTk.PhotoImage(logotipo)
 
@@ -121,8 +194,9 @@ def coinly():
     canvas.create_window(160, 90, window=string_user)
 
 
-    receitas = tk.Label(coinly, text="Receitas / Despesas", bg=temabg2,font=("Product Sans", 15),fg=tematxt3)
-    canvas.create_window(170, 155, window=receitas)
+    receitas = tk.Label(coinly, text="Eis as Suas Despesas:", bg=temabg2,font=("Product Sans", 15),fg=tematxt3)
+    lmao = canvas.create_window(170, 155, window=receitas)
+    canvas.tag_bind(lmao, "<Button-1>",trocar)
 
     data_atual = datetime.datetime.now()
     data_extenso = data_atual.strftime("%A, %d  %B  %Y")
@@ -134,6 +208,13 @@ def coinly():
     btn_ficheiro2 = ImageTk.PhotoImage(btn_ficheiro)
     impexp = canvas.create_image(7, 415, image=btn_ficheiro2, anchor="nw")
     canvas.tag_bind(impexp, "<Button-1>",impexps)
+
+    btn_trocar = Image.open("assets\\btn_trocar.png")
+    btn_trocar2 = ImageTk.PhotoImage(btn_trocar)
+    trocarmodo = canvas.create_image(7, 200, image=btn_trocar2, anchor="nw")
+    canvas.tag_bind(trocarmodo, "<Button-1>",trocar)
+
+
 
     btn_definicoes = Image.open("assets\\btn_defs.png")
     btn_definicoes2 = ImageTk.PhotoImage(btn_definicoes)
