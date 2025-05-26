@@ -194,7 +194,7 @@ def coinly():
     canvas.create_window(160, 90, window=string_user)
 
 
-    receitas = tk.Label(coinly, text="Eis as Suas Despesas:", bg=temabg2,font=("Product Sans", 15),fg=tematxt3)
+    receitas = tk.Label(coinly, text="Overview das Despesas:", bg=temabg2,font=("Product Sans", 15),fg=tematxt3)
     lmao = canvas.create_window(170, 155, window=receitas)
     canvas.tag_bind(lmao, "<Button-1>",trocar)
 
@@ -227,7 +227,7 @@ def coinly():
     sairbtn = canvas.create_image(7, 452, image=btn_sair2, anchor="nw")
     canvas.tag_bind(sairbtn, "<Button-1>",sair)
 
-    porcategoria = tk.Label(coinly, text="Por Categoria:", bg=temabg2,font=("Product Sans", 10),fg=tematxt3)
+    porcategoria = tk.Label(coinly, text="", bg=temabg2,font=("Product Sans", 10),fg=tematxt3)
     canvas.create_window(105, 390, window=porcategoria)
 
     saldoatual = tk.Label(coinly, text="Em Resumo:", bg=temabg2,font=("Product Sans", 12),fg=tematxt3)
